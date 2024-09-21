@@ -42,7 +42,7 @@ jobs:
           branch: 'main'
           owner: 'thanabodin19'
           repository: 'argocd-k8s-deploy'
-          token: ${{ secrets.PAT }}
+          # token: ${{ secrets.PAT }}
 
       - name: Access cloned repository content
         run: |
