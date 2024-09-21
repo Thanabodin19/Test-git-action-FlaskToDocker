@@ -11,15 +11,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -31,7 +35,7 @@ jobs:
             thanabodin19/argodemo:latest
             thanabodin19/argodemo:${{ github.run_number }}
 
-      - name: Clone Repository 
+      - name: Clone Repository
         uses: GuillaumeFalourd/clone-github-repo-action@v2.3
         with:
           depth: 1
@@ -51,5 +55,5 @@ jobs:
       - name: Push to Repository argocd-k8s-deploy
         run: |
           cd argocd-k8s-deploy
-          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/Thanabodin19/argued-k8s-deploy
+          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy
           git push origin main
