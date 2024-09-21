@@ -28,5 +28,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            devopswithsam/argodemo:latest
-            devopswithsam/argodemo:${{ github.run_number }
+            thanabodin19/argodemo:latest
+            thanabodin19/argodemo:test0.1
