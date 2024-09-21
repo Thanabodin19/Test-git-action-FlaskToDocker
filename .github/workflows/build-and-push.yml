@@ -29,4 +29,27 @@ jobs:
           push: true
           tags: |
             thanabodin19/argodemo:latest
-            thanabodin19/argodemo:test0.1
+            thanabodin19/argodemo:${{ github.run_number }}
+
+      - name: Clone Repository 
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'main'
+          owner: 'thanabodin19'
+          repository: 'argocd-k8s-deploy'
+
+      - name: Access cloned repository content
+        run: |
+          cd argocd-k8s-deploy
+          sed -i "s/thanabodin19\/argodemo:[0-9]*\|thanabodin19\/argodemo:latest/thanabodin19\/argodemo:${{ github.run_number }}/" deployment.yml
+          git config --global user.email "Thanabodin.kea@gmail.com"
+          git config --global user.name "thanabodin19"
+          git add deployment.yml
+          git commit -m "Update deployment.yml ${{ github.run_number }}"
+
+      - name: Push to Repository argocd-k8s-deploy
+        run: |
+          cd argocd-k8s-deploy
+          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/Thanabodin19/argued-k8s-deploy
+          git push origin main
