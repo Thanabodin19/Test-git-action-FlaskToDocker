@@ -6,36 +6,36 @@ on:
       - ci-cd
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  # build:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      # Checkout current repo
-      - name: Checkout code
-        uses: actions/checkout@v3
+  #   steps:
+  #     # Checkout current repo
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      # Set up Git user
-      - name: Set up Git user
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+  #     # Set up Git user
+  #     - name: Set up Git user
+  #       run: |
+  #         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+  #         git config --global user.name "github-actions[bot]"
 
-      # Login to Docker Hub
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
+  #     # Login to Docker Hub
+  #     - name: Log in to Docker Hub
+  #       run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
 
-      # Build Docker image
-      - name: Build Docker image
-        run: |
-          IMAGE_NAME=pyui-app-test
-          IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+  #     # Build Docker image
+  #     - name: Build Docker image
+  #       run: |
+  #         IMAGE_NAME=pyui-app-test
+  #         IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+  #         docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
+  #         echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
-      # Push Docker image to Docker Hub
-      - name: Push Docker image
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
+  #     # Push Docker image to Docker Hub
+  #     - name: Push Docker image
+  #       run: |
+  #         docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
 
   update-deployment:
     runs-on: ubuntu-latest
@@ -56,12 +56,13 @@ jobs:
           cd argucd-k8s-deploy
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
+          
 
       # Update Kubernetes Deployment YAML
       - name: Update deployment YAML
         run: |
           cd argucd-k8s-deploy
-          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}|g" pyui-app/pyui-app-deployment.yaml
+          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:0.0.1 |g" argucd-k8s-deploy/pyui-app/pyui-app-deployment.yaml
 
   commit-changes:
     runs-on: ubuntu-latest
