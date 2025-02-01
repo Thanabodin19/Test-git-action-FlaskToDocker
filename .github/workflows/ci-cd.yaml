@@ -40,7 +40,7 @@ jobs:
       - name: Checkout ArgoCD repo
         uses: actions/checkout@v3
         with:
-          repository: https://github.com/Thanabodin19/argucd-k8s-deploy.git
+          repository: Thanabodin19/argucd-k8s-deploy
           token: ${{ secrets.GITHUB_TOKEN }}
           path: pyui-app
 
@@ -58,7 +58,7 @@ jobs:
       - name: Checkout ArgoCD repo
         uses: actions/checkout@v3
         with:
-          repository: https://github.com/Thanabodin19/argucd-k8s-deploy.git
+          repository: Thanabodin19/argucd-k8s-deploy
           token: ${{ secrets.GITHUB_TOKEN }}
           path: pyui-app
 
