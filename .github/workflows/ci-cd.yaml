@@ -100,31 +100,31 @@ on:
       - ci-cd
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  # build:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Set up Git user
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+  #     - name: Set up Git user
+  #       run: |
+  #         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+  #         git config --global user.name "github-actions[bot]"
 
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
+  #     - name: Log in to Docker Hub
+  #       run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
 
-      - name: Build Docker image
-        run: |
-          IMAGE_NAME=pyui-app-test
-          IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+  #     - name: Build Docker image
+  #       run: |
+  #         IMAGE_NAME=pyui-app-test
+  #         IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+  #         docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
+  #         echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
-      - name: Push Docker image
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
+  #     - name: Push Docker image
+  #       run: |
+  #         docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
 
   update-deployment:
     runs-on: ubuntu-latest
@@ -140,7 +140,7 @@ jobs:
           branch: 'main'
           owner: 'thanabodin19'
           repository: 'argocd-k8s-deploy'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
 
       - name: Access cloned repository content
         run: |
@@ -150,5 +150,5 @@ jobs:
           git config --global user.name "thanabodin19"
           git add pyui-app/pyui-app-deployment.yaml
           git commit -m "Update image to ${{ env.IMAGE_TAG }}"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Thanabodin19/argocd-k8s-deploy
           git push origin main
+
