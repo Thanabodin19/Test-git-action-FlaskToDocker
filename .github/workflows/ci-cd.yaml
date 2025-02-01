@@ -124,8 +124,8 @@ jobs:
       # Commit and push changes to the target repository
       - name: Commit and push changes
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          git config --global user.email "Thanabodin.kea@gmail.com"
+          git config --global user.name "thanabodin19"
           git add .
           git commit -m "Update file.txt"
           git push
