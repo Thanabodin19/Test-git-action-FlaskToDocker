@@ -1,68 +1,3 @@
-# name: Build and Deploy to Kubernetes
-
-# on:
-#   push:
-#     branches:
-#       - ci-cd
-
-# jobs:
-
-
-#   update-deployment:
-#     runs-on: ubuntu-latest
-#     needs: build
-
-#     steps:
-#       # Checkout ArgoCD repo
-#       - name: Checkout ArgoCD repo
-#         uses: actions/checkout@v3
-#         with:
-#           repository: Thanabodin19/argucd-k8s-deploy
-#           token: ${{ secrets.GITHUB_TOKEN }}
-#           path: argucd-k8s-deploy
-
-#       # Set up Git user for ArgoCD repo
-#       - name: Set up Git user for ArgoCD repo
-#         run: |
-#           cd argucd-k8s-deploy
-#           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#           git config --global user.name "github-actions[bot]"
-          
-
-#       # Update Kubernetes Deployment YAML
-#       - name: Update deployment YAML
-#         run: |
-#           cd argucd-k8s-deploy
-#           sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:0.0.1 |g" argucd-k8s-deploy/pyui-app/pyui-app-deployment.yaml
-
-#   commit-changes:
-#     runs-on: ubuntu-latest
-#     needs: update-deployment
-
-#     steps:
-#       # Checkout ArgoCD repo
-#       - name: Checkout ArgoCD repo
-#         uses: actions/checkout@v3
-#         with:
-#           repository: Thanabodin19/argucd-k8s-deploy
-#           token: ${{ secrets.GITHUB_TOKEN }}
-#           path: argucd-k8s-deploy
-
-#       # Set up Git user for ArgoCD repo
-#       - name: Set up Git user for ArgoCD repo
-#         run: |
-#           cd argucd-k8s-deploy
-#           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#           git config --global user.name "github-actions[bot]"
-
-#       # Commit and push updated YAML back to ArgoCD repo
-#       - name: Commit changes
-#         run: |
-#           cd argucd-k8s-deploy
-#           git add .
-#           git commit -m "Update image to ${{ env.IMAGE_TAG }}"
-#           git push
-
 name: Update Deployment
 
 on:
@@ -97,6 +32,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
   update-deployment:
     runs-on: ubuntu-latest
+    needs: build
     permissions:
       contents: write
 
