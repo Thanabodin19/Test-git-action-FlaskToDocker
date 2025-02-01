@@ -23,8 +23,9 @@ jobs:
         run: |
           IMAGE_NAME=pyui-app-test
           IMAGE_TAG=$(date +%Y%m%d%H%M%S)  # Timestamp for unique tag
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV  # Store image tag in environment variable
+          cd cdti-chat-backoffice
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
 
       # Push Docker image to Docker Hub
       - name: Push Docker image
@@ -39,27 +40,22 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        uses: actions/checkout@v3
         with:
-          depth: 1
-          branch: 'main'
-          owner: 'thanabodin19'
-          repository: 'argocd-k8s-deploy'
+          repository: thanabodin19/argocd-k8s-deploy
+          ref: main
           token: ${{ secrets.PAT }}
 
       - name: Update deployment YAML
         run: |
-          cd argocd-k8s-deploy
           # Update the image tag in the deployment YAML file
-          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}|g" pyui-app/pyui-app-deployment.yaml
-          
-      - name: Commit and push changes
-        run: |
+          sed -i "s|image: .*$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}|g" pyui-app/pyui-app-deployment.yaml
+
           # Configure git to push changes
-          git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy.git
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          
+          git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy.git
+
           # Commit and push the changes to the YAML file
           git add pyui-app/pyui-app-deployment.yaml
           git commit -m "Update image to ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}"
