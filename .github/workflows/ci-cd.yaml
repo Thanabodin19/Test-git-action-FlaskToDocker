@@ -118,10 +118,10 @@ jobs:
       - name: Update deployment YAML
         run: |
           cd argocd-k8s-deploy
-          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:0.0.1|g" pyui-app/pyui-app-deployment.yaml
+          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:0.0.2|g" pyui-app/pyui-app-deployment.yaml
           git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy.git
-          git config --global user.email "Thanabodin.kea@gmail.com"
-          git config --global user.name "thanabodin19"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           git add pyui-app/pyui-app-deployment.yaml
           git commit -m "Update image to ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ github.run_number }}"
           git push
