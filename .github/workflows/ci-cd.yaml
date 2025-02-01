@@ -119,6 +119,7 @@ jobs:
         run: |
           cd argocd-k8s-deploy
           sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:0.0.1|g" pyui-app/pyui-app-deployment.yaml
+          git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy.git
           git config --global user.email "Thanabodin.kea@gmail.com"
           git config --global user.name "thanabodin19"
           git add pyui-app/pyui-app-deployment.yaml
