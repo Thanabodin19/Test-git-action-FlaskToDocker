@@ -13,7 +13,8 @@ jobs:
       # Checkout current repo
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
+      # Set up Git user
       - name: Set up Git user
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -49,10 +50,18 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: argucd-k8s-deploy
 
+      # Set up Git user for ArgoCD repo
+      - name: Set up Git user for ArgoCD repo
+        run: |
+          cd argucd-k8s-deploy
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
       # Update Kubernetes Deployment YAML
       - name: Update deployment YAML
         run: |
-          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}|g" argucd-k8s-deploy/pyui-app/pyui-app-deployment.yaml
+          cd argucd-k8s-deploy
+          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}|g" pyui-app/pyui-app-deployment.yaml
 
   commit-changes:
     runs-on: ubuntu-latest
@@ -67,11 +76,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: argucd-k8s-deploy
 
+      # Set up Git user for ArgoCD repo
+      - name: Set up Git user for ArgoCD repo
+        run: |
+          cd argucd-k8s-deploy
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
       # Commit and push updated YAML back to ArgoCD repo
       - name: Commit changes
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git add argucd-k8s-deploy/pyui-app/pyui-app-deployment.yaml
+          cd argucd-k8s-deploy
+          git add pyui-app/pyui-app-deployment.yaml
           git commit -m "Update image to ${{ env.IMAGE_TAG }}"
           git push
