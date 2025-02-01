@@ -1,4 +1,98 @@
-name: Build and Deploy to Kubernetes
+# name: Build and Deploy to Kubernetes
+
+# on:
+#   push:
+#     branches:
+#       - ci-cd
+
+# jobs:
+#   # build:
+#   #   runs-on: ubuntu-latest
+
+#   #   steps:
+#   #     # Checkout current repo
+#   #     - name: Checkout code
+#   #       uses: actions/checkout@v3
+
+#   #     # Set up Git user
+#   #     - name: Set up Git user
+#   #       run: |
+#   #         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#   #         git config --global user.name "github-actions[bot]"
+
+#   #     # Login to Docker Hub
+#   #     - name: Log in to Docker Hub
+#   #       run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
+
+#   #     # Build Docker image
+#   #     - name: Build Docker image
+#   #       run: |
+#   #         IMAGE_NAME=pyui-app-test
+#   #         IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+#   #         docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
+#   #         echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+#   #     # Push Docker image to Docker Hub
+#   #     - name: Push Docker image
+#   #       run: |
+#   #         docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
+
+#   update-deployment:
+#     runs-on: ubuntu-latest
+#     needs: build
+
+#     steps:
+#       # Checkout ArgoCD repo
+#       - name: Checkout ArgoCD repo
+#         uses: actions/checkout@v3
+#         with:
+#           repository: Thanabodin19/argucd-k8s-deploy
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           path: argucd-k8s-deploy
+
+#       # Set up Git user for ArgoCD repo
+#       - name: Set up Git user for ArgoCD repo
+#         run: |
+#           cd argucd-k8s-deploy
+#           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#           git config --global user.name "github-actions[bot]"
+          
+
+#       # Update Kubernetes Deployment YAML
+#       - name: Update deployment YAML
+#         run: |
+#           cd argucd-k8s-deploy
+#           sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:0.0.1 |g" argucd-k8s-deploy/pyui-app/pyui-app-deployment.yaml
+
+#   commit-changes:
+#     runs-on: ubuntu-latest
+#     needs: update-deployment
+
+#     steps:
+#       # Checkout ArgoCD repo
+#       - name: Checkout ArgoCD repo
+#         uses: actions/checkout@v3
+#         with:
+#           repository: Thanabodin19/argucd-k8s-deploy
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           path: argucd-k8s-deploy
+
+#       # Set up Git user for ArgoCD repo
+#       - name: Set up Git user for ArgoCD repo
+#         run: |
+#           cd argucd-k8s-deploy
+#           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#           git config --global user.name "github-actions[bot]"
+
+#       # Commit and push updated YAML back to ArgoCD repo
+#       - name: Commit changes
+#         run: |
+#           cd argucd-k8s-deploy
+#           git add .
+#           git commit -m "Update image to ${{ env.IMAGE_TAG }}"
+#           git push
+
+name: Update Another Repository
 
 on:
   push:
@@ -6,88 +100,35 @@ on:
       - ci-cd
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     # Checkout current repo
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-
-  #     # Set up Git user
-  #     - name: Set up Git user
-  #       run: |
-  #         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-  #         git config --global user.name "github-actions[bot]"
-
-  #     # Login to Docker Hub
-  #     - name: Log in to Docker Hub
-  #       run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
-
-  #     # Build Docker image
-  #     - name: Build Docker image
-  #       run: |
-  #         IMAGE_NAME=pyui-app-test
-  #         IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-  #         docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
-  #         echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-
-  #     # Push Docker image to Docker Hub
-  #     - name: Push Docker image
-  #       run: |
-  #         docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
-
-  update-deployment:
+  update-repo:
     runs-on: ubuntu-latest
-    needs: build
 
     steps:
-      # Checkout ArgoCD repo
-      - name: Checkout ArgoCD repo
+      # Checkout current repository
+      - name: Checkout current repository
+        uses: actions/checkout@v3
+
+      # Checkout target repository
+      - name: Checkout target repository
         uses: actions/checkout@v3
         with:
-          repository: Thanabodin19/argucd-k8s-deploy
+          repository: 'Thanabodin19/argucd-k8s-deploy'
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: argucd-k8s-deploy
+          path: pyui-app
 
-      # Set up Git user for ArgoCD repo
-      - name: Set up Git user for ArgoCD repo
+      # Make changes to the target repository
+      - name: Make changes
         run: |
-          cd argucd-k8s-deploy
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          
+          cd pyui-app
+          # ทำการเปลี่ยนแปลงที่ต้องการ เช่น แก้ไขไฟล์
+          echo "New content" > file.txt
 
-      # Update Kubernetes Deployment YAML
-      - name: Update deployment YAML
+      # Commit and push changes to the target repository
+      - name: Commit and push changes
         run: |
-          cd argucd-k8s-deploy
-          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:0.0.1 |g" argucd-k8s-deploy/pyui-app/pyui-app-deployment.yaml
-
-  commit-changes:
-    runs-on: ubuntu-latest
-    needs: update-deployment
-
-    steps:
-      # Checkout ArgoCD repo
-      - name: Checkout ArgoCD repo
-        uses: actions/checkout@v3
-        with:
-          repository: Thanabodin19/argucd-k8s-deploy
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: argucd-k8s-deploy
-
-      # Set up Git user for ArgoCD repo
-      - name: Set up Git user for ArgoCD repo
-        run: |
-          cd argucd-k8s-deploy
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-
-      # Commit and push updated YAML back to ArgoCD repo
-      - name: Commit changes
-        run: |
-          cd argucd-k8s-deploy
-          git add pyui-app/pyui-app-deployment.yaml
-          git commit -m "Update image to ${{ env.IMAGE_TAG }}"
+          cd pyui-app
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "Your Name"
+          git add .
+          git commit -m "Update file.txt"
           git push
