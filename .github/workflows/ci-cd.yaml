@@ -114,19 +114,16 @@ jobs:
         with:
           repository: 'Thanabodin19/argucd-k8s-deploy'
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: pyui-app
 
       # Make changes to the target repository
       - name: Make changes
         run: |
-          cd pyui-app
           # ทำการเปลี่ยนแปลงที่ต้องการ เช่น แก้ไขไฟล์
           echo "New content" > file.txt
 
       # Commit and push changes to the target repository
       - name: Commit and push changes
         run: |
-          cd pyui-app
           git config --global user.email "your-email@example.com"
           git config --global user.name "Your Name"
           git add .
