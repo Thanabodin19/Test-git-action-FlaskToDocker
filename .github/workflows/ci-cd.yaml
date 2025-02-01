@@ -140,7 +140,7 @@ jobs:
           branch: 'main'
           owner: 'thanabodin19'
           repository: 'argocd-k8s-deploy'
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Access cloned repository content
         run: |
@@ -150,5 +150,5 @@ jobs:
           git config --global user.name "thanabodin19"
           git add pyui-app/pyui-app-deployment.yaml
           git commit -m "Update image to ${{ env.IMAGE_TAG }}"
-          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Thanabodin19/argocd-k8s-deploy
           git push origin main
