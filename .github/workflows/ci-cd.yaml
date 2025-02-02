@@ -50,7 +50,7 @@ jobs:
         run: |
           cd argocd-k8s-deploy
           IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}|g" pyui-app/pyui-app-deployment.yaml
+          sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${IMAGE_TAG}|g" pyui-app/pyui-app-deployment.yaml
           git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy.git
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
