@@ -6,33 +6,33 @@ on:
       - '*'
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     # Checkout current repo
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+    steps:
+      # Checkout current repo
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     # Login to Docker Hub
-  #     - name: Log in to Docker Hub
-  #       run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
+      # Login to Docker Hub
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN_TEST }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME_TEST }}" --password-stdin
 
-  #     # Build Docker image
-  #     - name: Build Docker image
-  #       run: |
-  #         IMAGE_NAME=pyui-app-test
-  #         IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-  #         docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
-  #         echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      # Build Docker image
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=pyui-app-test
+          IMAGE_TAG=${GITHUB_REF#refs/tags/}
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
-  #     # Push Docker image to Docker Hub
-  #     - name: Push Docker image
-  #       run: |
-  #         docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
+      # Push Docker image to Docker Hub
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${{ env.IMAGE_TAG }}
   update-deployment:
     runs-on: ubuntu-latest
-    # needs: build
+    needs: build
     permissions:
       contents: write
 
@@ -49,7 +49,6 @@ jobs:
       - name: Update deployment YAML
         run: |
           cd argocd-k8s-deploy
-          IMAGE_TAG=${GITHUB_REF#refs/tags/}
           sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${IMAGE_TAG}|g" pyui-app/pyui-app-deployment.yaml
           git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy.git
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
