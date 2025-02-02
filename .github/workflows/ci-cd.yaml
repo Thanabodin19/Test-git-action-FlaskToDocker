@@ -26,6 +26,7 @@ jobs:
           cd cdti-chat-backoffice
           docker build -t ${{ secrets.DOCKERHUB_USERNAME_TEST }}/$IMAGE_NAME:$IMAGE_TAG .
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          cd ../
 
       # Push Docker image to Docker Hub
       - name: Push Docker image
