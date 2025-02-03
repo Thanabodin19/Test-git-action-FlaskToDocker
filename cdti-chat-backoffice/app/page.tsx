@@ -91,7 +91,7 @@ const LandingPage: FC = () => {
             />
             <div className="mt-10">
               <AppButton
-                label={"เริ่มกันเลย"}
+                label={"start"}
                 variant={"secondary"}
                 onClick={handleLogin}
               />
