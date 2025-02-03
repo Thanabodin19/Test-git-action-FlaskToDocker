@@ -45,15 +45,15 @@ jobs:
           depth: 1
           branch: 'main'
           owner: 'thanabodin19'
-          repository: 'argocd-k8s-deploy'
+          repository: 'Test-argucd-deploy'
           token: ${{ secrets.PAT }}
 
       - name: Update deployment YAML
         run: |
-          cd argocd-k8s-deploy
+          cd Test-argucd-deploy
           IMAGE_TAG=${GITHUB_REF#refs/tags/}
           sed -i "s|image: .*\$|image: ${{ secrets.DOCKERHUB_USERNAME_TEST }}/pyui-app-test:${IMAGE_TAG}|g" pyui-app/pyui-app-deployment.yaml
-          git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/argocd-k8s-deploy.git
+          git remote set-url origin https://thanabodin19:${{ secrets.PAT }}@github.com/Thanabodin19/Test-argucd-deploy.git
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add pyui-app/pyui-app-deployment.yaml
